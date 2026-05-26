@@ -25,6 +25,14 @@ export interface Order {
   customer: string;
 }
 
+export interface CreateOrderInput {
+  productId: string;
+  productTitle: string;
+  productImage: string;
+  amount: number;
+  customer: string;
+}
+
 export interface CreateProductInput {
   image: string;
   title: string;

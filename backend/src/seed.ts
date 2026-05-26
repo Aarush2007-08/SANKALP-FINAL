@@ -27,7 +27,7 @@ export function seedDatabase(clear = false) {
   const demoProducts = [
     {
       id: 'demo_1',
-      image: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800',
+      image: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?w=800',
       title: 'Handcrafted Bamboo Basket',
       description:
         '✨ Authentic handmade creation by rural women artisans. Beautiful bamboo basket woven with traditional techniques. Each piece is unique and crafted with traditional techniques passed down through generations. Support local artisans and bring home a piece of heritage.',
@@ -89,7 +89,7 @@ export function seedDatabase(clear = false) {
       id: 'ORD001',
       product_id: 'demo_1',
       product_title: 'Handwoven Basket',
-      product_image: 'https://images.unsplash.com/photo-1519374488542-1b3a669c8b97?w=400',
+      product_image: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?w=400',
       amount: 899,
       status: 'delivered',
       date: '2026-05-20',
@@ -109,7 +109,7 @@ export function seedDatabase(clear = false) {
       id: 'ORD003',
       product_id: 'demo_3',
       product_title: 'Embroidered Scarf',
-      product_image: 'https://images.unsplash.com/photo-1601924357840-3c6b0f5c3d49?w=400',
+      product_image: 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400',
       amount: 699,
       status: 'packed',
       date: '2026-05-24',

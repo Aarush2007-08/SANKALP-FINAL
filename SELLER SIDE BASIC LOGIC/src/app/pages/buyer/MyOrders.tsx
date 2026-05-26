@@ -33,8 +33,9 @@ export default function MyOrders() {
         <Button
           className="scm-cta-gradient rounded-full sm:self-end shrink-0"
           onClick={() => {
-            setCustomerName(name.trim());
-            refreshOrders();
+            const lookupName = name.trim();
+            setCustomerName(lookupName);
+            refreshOrders(lookupName);
           }}
         >
           {t('buyer.showOrders')}

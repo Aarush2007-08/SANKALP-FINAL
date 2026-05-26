@@ -27,8 +27,8 @@ interface BuyerContextType {
   myOrders: Order[];
   loading: boolean;
   refreshProducts: () => Promise<void>;
-  refreshOrders: () => Promise<void>;
-  placeAllOrders: () => Promise<void>;
+  refreshOrders: (customerOverride?: string) => Promise<void>;
+  placeAllOrders: (customerOverride?: string) => Promise<void>;
 }
 
 const BuyerContext = createContext<BuyerContextType | undefined>(undefined);
@@ -68,10 +68,11 @@ export function BuyerProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const refreshOrders = useCallback(async () => {
-    if (!customerName.trim()) return setMyOrders([]);
+  const refreshOrders = useCallback(async (customerOverride?: string) => {
+    const lookupName = (customerOverride ?? customerName).trim();
+    if (!lookupName) return setMyOrders([]);
     try {
-      setMyOrders(await api.getOrdersByCustomer(customerName.trim()));
+      setMyOrders(await api.getOrdersByCustomer(lookupName));
     } catch {
       setMyOrders([]);
     }
@@ -110,18 +111,21 @@ export function BuyerProvider({ children }: { children: React.ReactNode }) {
   };
   const clearCart = () => setCart([]);
 
-  const placeAllOrders = async () => {
+  const placeAllOrders = async (customerOverride?: string) => {
+    const orderCustomer = (customerOverride ?? customerName).trim();
+    if (!orderCustomer) throw new Error('Customer name is required');
+
     for (const item of cart) {
       await api.createOrder({
         productId: item.productId,
         productTitle: item.title,
         productImage: item.image,
         amount: item.price * item.quantity,
-        customer: customerName.trim(),
+        customer: orderCustomer,
       });
     }
     clearCart();
-    await refreshOrders();
+    await refreshOrders(orderCustomer);
   };
 
   return (

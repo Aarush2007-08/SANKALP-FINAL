@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db/index.js';
-import type { Order, OrderStatus } from '../types.js';
+import type { CreateOrderInput, Order, OrderStatus } from '../types.js';
 
 const router = Router();
 const STATUS_FLOW: OrderStatus[] = ['pending', 'packed', 'shipped', 'delivered'];
@@ -18,11 +18,52 @@ function rowToOrder(row: Record<string, unknown>): Order {
   };
 }
 
+function createOrderId() {
+  return `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+}
+
 router.get('/', (_req, res) => {
   const rows = db
     .prepare('SELECT * FROM orders ORDER BY date DESC')
     .all() as Record<string, unknown>[];
   res.json(rows.map(rowToOrder));
+});
+
+router.get('/customer/:customer', (req, res) => {
+  const customer = req.params.customer.trim();
+  const rows = db
+    .prepare('SELECT * FROM orders WHERE lower(customer) = lower(?) ORDER BY date DESC')
+    .all(customer) as Record<string, unknown>[];
+  res.json(rows.map(rowToOrder));
+});
+
+router.post('/', (req, res) => {
+  const body = req.body as Partial<CreateOrderInput>;
+  const customer = body.customer?.trim();
+
+  if (
+    !body.productId ||
+    !body.productTitle ||
+    !body.productImage ||
+    !customer ||
+    typeof body.amount !== 'number' ||
+    !Number.isFinite(body.amount) ||
+    body.amount <= 0
+  ) {
+    res.status(400).json({ error: 'Invalid order details' });
+    return;
+  }
+
+  const id = createOrderId();
+  const date = new Date().toISOString();
+
+  db.prepare(
+    `INSERT INTO orders (id, product_id, product_title, product_image, amount, status, date, customer)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(id, body.productId, body.productTitle, body.productImage, body.amount, 'pending', date, customer);
+
+  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(id) as Record<string, unknown>;
+  res.status(201).json(rowToOrder(row));
 });
 
 router.patch('/:id/status', (req, res) => {

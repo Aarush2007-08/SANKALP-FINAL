@@ -26,7 +26,7 @@ export default function Checkout() {
     setCustomerName(name.trim());
     setBusy(true);
     try {
-      await placeAllOrders();
+      await placeAllOrders(name.trim());
       confetti({ particleCount: 80, spread: 60, colors: ['#ef4d23', '#ff6b47', '#0b0f1a'] });
       toast.success(t('buyer.orderPlaced'));
       navigate('/buyer/orders');

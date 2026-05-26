@@ -29,7 +29,7 @@ export default function LandingNavbar() {
               <span className="w-1.5 h-1.5 rounded-full bg-black" />
               Home
             </a>
-            <a href="#dashboard" className="text-[14px] text-neutral-800">
+            <a href="#features" className="text-[14px] text-neutral-800">
               Features
             </a>
             <a href="#about" className="text-[14px] text-neutral-800">
@@ -78,7 +78,8 @@ export default function LandingNavbar() {
         </div>
         {open && (
           <div className="absolute top-full left-2 right-2 mt-2 bg-white rounded-2xl shadow-lg border p-3 z-20 md:hidden">
-            <a href="#dashboard" className="block py-2 text-sm" onClick={() => setOpen(false)}>Features</a>
+            <a href="#features" className="block py-2 text-sm" onClick={() => setOpen(false)}>Features</a>
+            <a href="#about" className="block py-2 text-sm" onClick={() => setOpen(false)}>About</a>
             <button type="button" className="block w-full text-left py-2 text-sm" onClick={() => navigate('/seller')}>{t('platform.sellerTitle')}</button>
             <button type="button" className="block w-full text-left py-2 text-sm" onClick={() => navigate('/buyer')}>{t('platform.buyerTitle')}</button>
           </div>

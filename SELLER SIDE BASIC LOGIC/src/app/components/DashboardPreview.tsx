@@ -60,14 +60,14 @@ export default function DashboardPreview() {
               </div>
             ))}
             {[
-              ['Ste targets (This month)', '10'],
-              ['Ste targets (This year)', '100'],
+              ['Set targets (This month)', '10'],
+              ['Set targets (This year)', '100'],
             ].map(([label, val]) => (
               <div key={label}>
                 <label className="block text-[12px] text-neutral-700 mb-1.5">{label}</label>
                 <div className="flex border border-neutral-200 rounded-lg overflow-hidden">
                   <span className="px-3 py-2 bg-neutral-50 text-neutral-500 border-r">#</span>
-                  <input readOnly defaultValue={val} className="flex-1 px-3 py-2 text-sm outline-none" />
+                  <input defaultValue={val} className="flex-1 px-3 py-2 text-sm outline-none" />
                 </div>
               </div>
             ))}

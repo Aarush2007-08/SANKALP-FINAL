@@ -17,6 +17,7 @@ import { Label } from '../components/ui/label';
 import { cn } from '../components/ui/utils';
 
 const STEPS = ['stepImage', 'stepDescribe', 'stepAI', 'stepPublish'] as const;
+const VOICE_ONBOARDING_KEY = 'scm_voice_onboarding_brief';
 
 export default function UploadProduct() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function UploadProduct() {
   const { addProduct } = useApp();
 
   const [image, setImage] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(() => localStorage.getItem(VOICE_ONBOARDING_KEY) ?? '');
   const [isListening, setIsListening] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState<GenerateListingResult | null>(null);
@@ -131,6 +132,7 @@ export default function UploadProduct() {
     });
 
     confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+    localStorage.removeItem(VOICE_ONBOARDING_KEY);
     toast.success(t('upload.published'));
     navigate('/seller/storefront');
   };
