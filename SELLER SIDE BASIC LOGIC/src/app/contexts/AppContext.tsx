@@ -10,6 +10,7 @@ import {
   enqueueProduct,
   setOfflineQueue,
 } from '../api/client';
+import { sampleEarningsSummary, sampleOrders, sampleProducts } from '../data/sampleProducts';
 
 export type { Product, Order, OrderStatus };
 
@@ -75,14 +76,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         api.getOrders(),
         api.getEarningsSummary(),
       ]);
-      setProducts(mergeWithQueue(prods));
-      setOrders(ords);
-      setEarningsSummary(summary);
+      const availableProducts = prods.length ? prods : sampleProducts;
+      const availableOrders = ords.length ? ords : sampleOrders;
+      const zeroSummary =
+        !summary ||
+        (summary.totalEarnings === 0 &&
+          summary.completedOrders === 0 &&
+          summary.pendingRevenue === 0);
+      const availableSummary = zeroSummary ? sampleEarningsSummary : summary;
+      setProducts(mergeWithQueue(availableProducts));
+      setOrders(availableOrders);
+      setEarningsSummary(availableSummary);
     } catch {
       const queue = getOfflineQueue();
-      if (queue.length) {
-        setProducts(queue.map((q, i) => queuedToProduct(q, i)));
-      }
+      const queuedProducts = queue.map((q, i) => queuedToProduct(q, i));
+      setProducts(queuedProducts.length ? [...queuedProducts, ...sampleProducts] : sampleProducts);
+      setOrders(sampleOrders);
+      setEarningsSummary(sampleEarningsSummary);
     }
   }, [mergeWithQueue]);
 

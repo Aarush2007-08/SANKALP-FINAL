@@ -25,67 +25,171 @@ export async function seedDatabase(clear = false) {
   const demoProducts = [
     {
       id: 'demo_1',
-      image: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?w=800',
-      title: 'Handcrafted Bamboo Basket',
-      description: '✨ Authentic handmade creation by rural women artisans. Beautiful bamboo basket woven with traditional techniques. Each piece is unique and crafted with traditional techniques passed down through generations. Support local artisans and bring home a piece of heritage.',
-      price: 899,
+      image:
+        'https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=900&q=80',
+      title: 'Handwoven Palm Basket',
+      description:
+        'A sturdy handwoven basket made from natural palm fibers by women artisan groups.',
+      price: 799,
       category: 'Handicrafts',
-      caption: '🌟 Discover the beauty of handmade craftsmanship! Beautiful bamboo basket woven with traditional techniques. Every piece tells a story of tradition and passion. Made with love by rural women artisans. 💚',
-      hashtags: JSON.stringify(['#Handmade', '#Artisan', '#RuralCrafts', '#Handicrafts', '#SupportLocal', '#Sustainable', '#WomenEmpowerment', '#MadeInIndia']),
-      artisan: 'Rural Women Artisan',
+      caption:
+        'Bring home eco-friendly storage with this handwoven palm basket made by rural artisans.',
+      hashtags: JSON.stringify([
+        '#Handmade',
+        '#WomenArtisans',
+        '#Sustainable',
+        '#Handicrafts',
+        '#MadeInIndia',
+      ]),
+      artisan: 'Savitri Collective',
       synced: 1,
       created_at: Date.now() - 86400000,
     },
     {
       id: 'demo_2',
-      image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800',
-      title: 'Handcrafted Clay Pottery',
-      description: '✨ Authentic handmade creation by rural women artisans. Elegant clay pottery with intricate designs. Each piece is unique and crafted with traditional techniques passed down through generations. Support local artisans and bring home a piece of heritage.',
-      price: 1299,
+      image:
+        'https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?auto=format&fit=crop&w=900&q=80',
+      title: 'Terracotta Table Vase',
+      description:
+        'Traditional terracotta vase with hand-etched floral patterns and natural matte finish.',
+      price: 1199,
       category: 'Pottery',
-      caption: '🌟 Discover the beauty of handmade craftsmanship! Elegant clay pottery with intricate designs. Every piece tells a story of tradition and passion. Made with love by rural women artisans. 💚',
-      hashtags: JSON.stringify(['#Handmade', '#Artisan', '#RuralCrafts', '#Pottery', '#SupportLocal', '#Sustainable', '#WomenEmpowerment', '#MadeInIndia']),
-      artisan: 'Rural Women Artisan',
+      caption: 'Handcrafted terracotta elegance for your living space.',
+      hashtags: JSON.stringify([
+        '#Pottery',
+        '#Terracotta',
+        '#ArtisanMade',
+        '#HomeDecor',
+        '#SupportLocal',
+      ]),
+      artisan: 'Madhavi Pottery Unit',
       synced: 1,
       created_at: Date.now() - 172800000,
+    },
+    {
+      id: 'demo_3',
+      image:
+        'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80',
+      title: 'Block Print Cotton Stole',
+      description:
+        'Soft cotton stole featuring hand block-printed motifs inspired by village art patterns.',
+      price: 649,
+      category: 'Textiles',
+      caption: 'A breathable cotton stole with authentic hand block print work.',
+      hashtags: JSON.stringify([
+        '#Textiles',
+        '#BlockPrint',
+        '#Cotton',
+        '#WomenLed',
+        '#SlowFashion',
+      ]),
+      artisan: 'Narmada Stitch Circle',
+      synced: 1,
+      created_at: Date.now() - 259200000,
+    },
+    {
+      id: 'demo_4',
+      image:
+        'https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=900&q=80',
+      title: 'Beaded Thread Earrings',
+      description:
+        'Lightweight handmade earrings crafted with glass beads and dyed cotton thread.',
+      price: 499,
+      category: 'Jewelry',
+      caption: 'Everyday handmade earrings that add color and character.',
+      hashtags: JSON.stringify([
+        '#Jewelry',
+        '#HandmadeAccessories',
+        '#Beadwork',
+        '#Crafts',
+        '#RuralMakers',
+      ]),
+      artisan: 'Jyoti Self Help Group',
+      synced: 1,
+      created_at: Date.now() - 345600000,
+    },
+    {
+      id: 'demo_5',
+      image:
+        'https://images.unsplash.com/photo-1616628182509-6f03f56a2b35?auto=format&fit=crop&w=900&q=80',
+      title: 'Jute Storage Organizer',
+      description:
+        'Durable jute organizer with stitched handles, ideal for shelves, toys, and laundry.',
+      price: 949,
+      category: 'Home Decor',
+      caption: 'Functional handcrafted jute organizer for neat and stylish storage.',
+      hashtags: JSON.stringify(['#Jute', '#HomeDecor', '#EcoFriendly', '#Handmade', '#SupportWomen']),
+      artisan: 'Kamla Women Weavers',
+      synced: 1,
+      created_at: Date.now() - 432000000,
     },
   ];
 
   for (const p of demoProducts) {
-    await db.query(`
+    await db.query(
+      `
       INSERT INTO products (id, image, title, description, price, category, caption, hashtags, artisan, synced, created_at)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-    `, [p.id, p.image, p.title, p.description, p.price, p.category, p.caption, p.hashtags, p.artisan, p.synced, p.created_at]);
+    `,
+      [p.id, p.image, p.title, p.description, p.price, p.category, p.caption, p.hashtags, p.artisan, p.synced, p.created_at]
+    );
   }
 
   const demoOrders = [
     {
-      id: 'ORD001', product_id: 'demo_1', product_title: 'Handwoven Basket',
-      product_image: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?w=400',
-      amount: 899, status: 'delivered', date: '2026-05-20', customer: 'Priya Sharma',
+      id: 'ORD001',
+      product_id: 'demo_1',
+      product_title: 'Handwoven Palm Basket',
+      product_image:
+        'https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80',
+      amount: 799,
+      status: 'delivered',
+      date: '2026-05-20',
+      customer: 'Priya Sharma',
     },
     {
-      id: 'ORD002', product_id: 'demo_2', product_title: 'Clay Pottery Set',
-      product_image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=400',
-      amount: 1499, status: 'shipped', date: '2026-05-22', customer: 'Rajesh Kumar',
+      id: 'ORD002',
+      product_id: 'demo_2',
+      product_title: 'Terracotta Table Vase',
+      product_image:
+        'https://images.unsplash.com/photo-1612198790700-0ff08cb726e5?auto=format&fit=crop&w=500&q=80',
+      amount: 1199,
+      status: 'shipped',
+      date: '2026-05-22',
+      customer: 'Rajesh Kumar',
     },
     {
-      id: 'ORD003', product_id: 'demo_3', product_title: 'Embroidered Scarf',
-      product_image: 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400',
-      amount: 699, status: 'packed', date: '2026-05-24', customer: 'Anita Desai',
+      id: 'ORD003',
+      product_id: 'demo_3',
+      product_title: 'Block Print Cotton Stole',
+      product_image:
+        'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=500&q=80',
+      amount: 649,
+      status: 'packed',
+      date: '2026-05-24',
+      customer: 'Anita Desai',
     },
     {
-      id: 'ORD004', product_id: 'demo_4', product_title: 'Wooden Craft Box',
-      product_image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400',
-      amount: 1299, status: 'pending', date: '2026-05-25', customer: 'Vikram Singh',
+      id: 'ORD004',
+      product_id: 'demo_5',
+      product_title: 'Jute Storage Organizer',
+      product_image:
+        'https://images.unsplash.com/photo-1616628182509-6f03f56a2b35?auto=format&fit=crop&w=500&q=80',
+      amount: 949,
+      status: 'pending',
+      date: '2026-05-25',
+      customer: 'Vikram Singh',
     },
   ];
 
   for (const o of demoOrders) {
-    await db.query(`
+    await db.query(
+      `
       INSERT INTO orders (id, product_id, product_title, product_image, amount, status, date, customer)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [o.id, o.product_id, o.product_title, o.product_image, o.amount, o.status, o.date, o.customer]);
+    `,
+      [o.id, o.product_id, o.product_title, o.product_image, o.amount, o.status, o.date, o.customer]
+    );
   }
 }
 

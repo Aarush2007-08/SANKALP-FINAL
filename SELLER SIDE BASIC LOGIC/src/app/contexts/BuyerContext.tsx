@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api, type Product, type Order } from '../api/client';
+import { sampleProducts } from '../data/sampleProducts';
 
 export interface CartItem {
   productId: string;
@@ -62,9 +63,10 @@ export function BuyerProvider({ children }: { children: React.ReactNode }) {
   const refreshProducts = useCallback(async () => {
     try {
       const p = await api.getProducts();
-      setProducts(p.filter((x) => x.synced));
+      const syncedProducts = p.filter((x) => x.synced);
+      setProducts(syncedProducts.length ? syncedProducts : sampleProducts);
     } catch {
-      setProducts([]);
+      setProducts(sampleProducts);
     }
   }, []);
 
