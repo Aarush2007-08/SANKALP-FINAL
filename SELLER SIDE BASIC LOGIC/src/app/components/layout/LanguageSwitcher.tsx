@@ -13,8 +13,8 @@ export default function LanguageSwitcher() {
 
   return (
     <Select value={i18n.language} onValueChange={(v) => i18n.changeLanguage(v)}>
-      <SelectTrigger className="w-[130px] h-9 bg-card/80 border-border text-sm">
-        <Globe className="w-4 h-4 mr-1 text-brand-accent shrink-0" />
+      <SelectTrigger className="w-[118px] h-8 rounded-full border-neutral-200 bg-white text-xs shadow-none">
+        <Globe className="w-3.5 h-3.5 text-[#ef4d23] shrink-0" />
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

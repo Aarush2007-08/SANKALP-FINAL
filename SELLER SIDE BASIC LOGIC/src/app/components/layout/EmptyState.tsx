@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 
 interface EmptyStateProps {
@@ -18,17 +17,15 @@ export default function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <Card className="border-border/60 shadow-xl">
-      <CardContent className="p-12 text-center">
-        <div className="text-muted-foreground/40 mb-4 flex justify-center">{icon}</div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">{title}</h2>
-        <p className="text-muted-foreground mb-6">{description}</p>
-        {actionLabel && onAction && (
-          <Button onClick={onAction} className="bg-gradient-to-r from-brand-primary to-emerald-500">
-            {actionLabel}
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <div className="scm-card p-12 text-center">
+      <div className="text-[#ef4d23]/30 mb-4 flex justify-center">{icon}</div>
+      <h2 className="text-2xl font-bold text-neutral-900 mb-2">{title}</h2>
+      <p className="text-neutral-600 mb-6 max-w-sm mx-auto">{description}</p>
+      {actionLabel && onAction && (
+        <Button onClick={onAction} className="scm-cta-gradient rounded-full px-8">
+          {actionLabel}
+        </Button>
+      )}
+    </div>
   );
 }

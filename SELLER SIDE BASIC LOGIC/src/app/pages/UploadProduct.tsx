@@ -10,7 +10,7 @@ import { api, type GenerateListingResult } from '../api/client';
 import { speechLocales } from '../../i18n';
 import PageHeader from '../components/layout/PageHeader';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
@@ -132,12 +132,12 @@ export default function UploadProduct() {
 
     confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     toast.success(t('upload.published'));
-    navigate('/storefront');
+    navigate('/seller/storefront');
   };
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-      <PageHeader title={t('upload.title')} icon={<Sparkles className="w-9 h-9 text-brand-accent" />} />
+      <PageHeader title={t('upload.title')} icon={<Sparkles className="w-8 h-8 text-[#ef4d23]" />} />
 
       <div className="flex justify-between mb-8 gap-2">
         {STEPS.map((step, i) => (
@@ -146,8 +146,8 @@ export default function UploadProduct() {
               className={cn(
                 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-colors',
                 i <= displayStep
-                  ? 'bg-brand-primary border-brand-primary text-white'
-                  : 'border-border text-muted-foreground'
+                  ? 'bg-[#ef4d23] border-[#ef4d23] text-white'
+                  : 'border-neutral-200 text-neutral-400 bg-white'
               )}
             >
               {i + 1}
@@ -159,12 +159,12 @@ export default function UploadProduct() {
         ))}
       </div>
 
-      <Card className="border-border/60 shadow-xl">
+      <div className="scm-card">
         <CardContent className="p-6 sm:p-8 space-y-6">
           <div>
             <Label className="text-base mb-3 block">{t('upload.productImage')}</Label>
             <div
-              className="border-2 border-dashed border-border rounded-2xl p-8 text-center hover:border-brand-primary/50 transition-colors cursor-pointer"
+              className="border-2 border-dashed border-neutral-200 rounded-2xl p-8 text-center hover:border-[#ef4d23]/50 bg-neutral-50/50 transition-colors cursor-pointer"
               onClick={() => !image && fileInputRef.current?.click()}
             >
               {image ? (
@@ -214,7 +214,7 @@ export default function UploadProduct() {
                 size="icon"
                 className={cn(
                   'absolute bottom-3 right-3 rounded-full',
-                  isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-brand-primary hover:bg-brand-primary/90'
+                  isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-[#ef4d23] hover:bg-[#d9431a]'
                 )}
                 onClick={startVoiceInput}
               >
@@ -227,7 +227,7 @@ export default function UploadProduct() {
           <Button
             onClick={generateAIData}
             disabled={isGenerating || !description.trim()}
-            className="w-full h-12 bg-gradient-to-r from-brand-primary to-emerald-500 text-base"
+            className="w-full h-12 scm-cta-gradient rounded-full text-base"
           >
             <Sparkles className="w-5 h-5" />
             {isGenerating ? t('upload.generating') : t('upload.generate')}
@@ -254,10 +254,10 @@ export default function UploadProduct() {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="bg-green-950/30 border-green-800/50">
+                  <div className="scm-subcard p-4">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        <Tag className="w-4 h-4 text-green-400" />
+                        <Tag className="w-4 h-4 text-[#ef4d23]" />
                         {t('upload.titleLabel')}
                       </CardTitle>
                     </CardHeader>
@@ -265,15 +265,15 @@ export default function UploadProduct() {
                       <Input
                         value={aiResult.title}
                         onChange={(e) => updateAiField('title', e.target.value)}
-                        className="bg-background/50"
+                        className="bg-white"
                       />
                     </CardContent>
-                  </Card>
+                  </div>
 
-                  <Card className="bg-amber-950/30 border-amber-800/50">
+                  <div className="scm-subcard p-4">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-amber-400" />
+                        <DollarSign className="w-4 h-4 text-amber-600" />
                         {t('upload.priceLabel')}
                       </CardTitle>
                     </CardHeader>
@@ -282,16 +282,16 @@ export default function UploadProduct() {
                         type="number"
                         value={aiResult.price}
                         onChange={(e) => updateAiField('price', Number(e.target.value))}
-                        className="bg-background/50 text-lg font-bold"
+                        className="bg-white text-lg font-bold"
                       />
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-neutral-500 mt-1">
                         {t('upload.priceRange', { range: aiResult.pricing.range })}
                       </p>
                     </CardContent>
-                  </Card>
+                  </div>
                 </div>
 
-                <Card className="bg-blue-950/30 border-blue-800/50">
+                <div className="scm-subcard p-4">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">{t('upload.ecommerceDesc')}</CardTitle>
                   </CardHeader>
@@ -299,15 +299,15 @@ export default function UploadProduct() {
                     <Textarea
                       value={aiResult.ecommerceDescription}
                       onChange={(e) => updateAiField('ecommerceDescription', e.target.value)}
-                      className="bg-background/50 min-h-24"
+                      className="bg-white min-h-24"
                     />
                   </CardContent>
-                </Card>
+                </div>
 
-                <Card className="bg-purple-950/30 border-purple-800/50">
+                <div className="scm-subcard p-4">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
-                      <Instagram className="w-4 h-4 text-purple-400" />
+                      <Instagram className="w-4 h-4 text-violet-600" />
                       {t('upload.instagramCaption')}
                     </CardTitle>
                   </CardHeader>
@@ -315,7 +315,7 @@ export default function UploadProduct() {
                     <Textarea
                       value={aiResult.caption}
                       onChange={(e) => updateAiField('caption', e.target.value)}
-                      className="bg-background/50"
+                      className="bg-white"
                     />
                     <Input
                       value={aiResult.hashtags.join(' ')}
@@ -326,12 +326,12 @@ export default function UploadProduct() {
                         )
                       }
                       placeholder="#Handmade #Artisan"
-                      className="bg-background/50 text-sm"
+                      className="bg-white text-sm"
                     />
                   </CardContent>
-                </Card>
+                </div>
 
-                <Card className="bg-teal-950/30 border-teal-800/50">
+                <div className="scm-subcard p-4">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">{t('upload.fairPricing')}</CardTitle>
                   </CardHeader>
@@ -346,14 +346,14 @@ export default function UploadProduct() {
                     </div>
                     <div className="flex justify-between border-t border-border pt-2 font-semibold">
                       <span>{t('upload.suggested')}</span>
-                      <span className="text-brand-primary">₹{aiResult.price}</span>
+                      <span className="text-[#ef4d23] font-bold">₹{aiResult.price}</span>
                     </div>
                   </CardContent>
-                </Card>
+                </div>
 
                 <Button
                   onClick={handlePublish}
-                  className="w-full h-12 bg-gradient-to-r from-brand-primary to-emerald-600 text-base font-bold"
+                  className="w-full h-12 scm-cta-gradient rounded-full text-base font-bold"
                 >
                   {t('upload.publish')}
                 </Button>
@@ -361,7 +361,7 @@ export default function UploadProduct() {
             )}
           </AnimatePresence>
         </CardContent>
-      </Card>
+      </div>
     </motion.div>
   );
 }

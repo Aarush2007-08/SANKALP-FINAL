@@ -98,6 +98,18 @@ export const api = {
 
   getOrders: () => request<Order[]>('/api/orders'),
 
+  getOrdersByCustomer: (customer: string) =>
+    request<Order[]>(`/api/orders/customer/${encodeURIComponent(customer)}`),
+
+  createOrder: (data: {
+    productId: string;
+    productTitle: string;
+    productImage: string;
+    amount: number;
+    customer: string;
+  }) =>
+    request<Order>('/api/orders', { method: 'POST', body: JSON.stringify(data) }),
+
   updateOrderStatus: (id: string, status: OrderStatus) =>
     request<Order>(`/api/orders/${id}/status`, {
       method: 'PATCH',

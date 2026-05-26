@@ -4,10 +4,10 @@ import { TrendingUp, DollarSign, Package, Calendar } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useApp } from '../contexts/AppContext';
 import PageHeader from '../components/layout/PageHeader';
+import PageLoader from '../components/layout/PageLoader';
 import StatCard from '../components/layout/StatCard';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
-const barColors = ['#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#ec4899'];
+const barColors = ['#ef4d23', '#ff6b47', '#0b0f1a', '#f59e0b', '#8b5cf6'];
 
 export default function Earnings() {
   const { t } = useTranslation();
@@ -21,103 +21,79 @@ export default function Earnings() {
 
   const deliveredOrders = orders.filter((o) => o.status === 'delivered');
 
-  if (loading) {
-    return <div className="text-center py-20 text-muted-foreground">{t('common.loading')}</div>;
-  }
+  if (loading) return <PageLoader />;
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
       <PageHeader
         title={t('earnings.title')}
         subtitle={t('earnings.subtitle')}
-        icon={<TrendingUp className="w-9 h-9 text-purple-400" />}
+        icon={<TrendingUp className="w-8 h-8 text-[#ef4d23]" />}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          label={t('earnings.totalEarnings')}
-          value={`₹${totalEarnings.toLocaleString('en-IN')}`}
-          icon={DollarSign}
-        />
-        <StatCard
-          label={t('earnings.completedOrders')}
-          value={completedOrders}
-          icon={Package}
-          accent="from-blue-400 to-cyan-500"
-        />
+        <StatCard label={t('earnings.totalEarnings')} value={`₹${totalEarnings.toLocaleString('en-IN')}`} icon={DollarSign} accent="orange" />
+        <StatCard label={t('earnings.completedOrders')} value={completedOrders} icon={Package} accent="blue" />
         <StatCard
           label={t('earnings.pendingRevenue')}
           value={`₹${pendingRevenue.toLocaleString('en-IN')}`}
           icon={TrendingUp}
-          accent="from-purple-400 to-pink-500"
+          accent="purple"
         />
         <StatCard
           label={t('earnings.thisMonth')}
           value={`₹${totalEarnings.toLocaleString('en-IN')}`}
           icon={Calendar}
-          accent="from-brand-accent to-brand-warm"
+          accent="neutral"
         />
       </div>
 
-      <Card className="border-border/60 shadow-xl mb-8">
-        <CardHeader>
-          <CardTitle>{t('earnings.monthlyChart')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <YAxis
-                  tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                  tickFormatter={(v) => `₹${v}`}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                    color: 'hsl(var(--foreground))',
-                  }}
-                  formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'Earnings']}
-                />
-                <Bar dataKey="earnings" radius={[8, 8, 0, 0]}>
-                  {monthlyData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="scm-card p-6 mb-8">
+        <h2 className="font-semibold text-neutral-900 mb-4">{t('earnings.monthlyChart')}</h2>
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+              <XAxis dataKey="month" tick={{ fill: '#737373', fontSize: 12 }} />
+              <YAxis tick={{ fill: '#737373', fontSize: 12 }} tickFormatter={(v) => `₹${v}`} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#fff',
+                  border: '1px solid rgba(0,0,0,0.08)',
+                  borderRadius: '12px',
+                  color: '#171717',
+                }}
+                formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, 'Earnings']}
+              />
+              <Bar dataKey="earnings" radius={[8, 8, 0, 0]}>
+                {monthlyData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={barColors[index % barColors.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
-      <Card className="border-border/60 shadow-xl mb-8">
-        <CardHeader>
-          <CardTitle>{t('earnings.recentTransactions')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <div className="scm-card p-6 mb-8">
+        <h2 className="font-semibold text-neutral-900 mb-4">{t('earnings.recentTransactions')}</h2>
+        <div className="space-y-3">
           {deliveredOrders.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">—</p>
+            <p className="text-neutral-500 text-center py-8">—</p>
           ) : (
             deliveredOrders.map((order, index) => (
               <motion.div
                 key={order.id}
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-4 bg-green-950/30 rounded-xl border border-green-900/50"
+                transition={{ delay: index * 0.04 }}
+                className="flex items-center justify-between p-4 scm-subcard"
               >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={order.productImage}
-                    alt=""
-                    className="w-14 h-14 rounded-lg object-cover"
-                  />
-                  <div>
-                    <h3 className="font-semibold">{order.productTitle}</h3>
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img src={order.productImage} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-neutral-900 truncate">{order.productTitle}</h3>
+                    <p className="text-sm text-neutral-500">
                       {new Date(order.date).toLocaleDateString('en-IN', {
                         year: 'numeric',
                         month: 'short',
@@ -126,24 +102,20 @@ export default function Earnings() {
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-lg font-bold text-brand-primary">
-                    +₹{order.amount.toLocaleString('en-IN')}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{order.customer}</p>
+                <div className="text-right shrink-0 ml-2">
+                  <p className="text-lg font-bold text-[#ef4d23]">+₹{order.amount.toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-neutral-500">{order.customer}</p>
                 </div>
               </motion.div>
             ))
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="bg-gradient-to-r from-brand-primary to-emerald-600 border-0 text-white">
-        <CardContent className="p-8 text-center">
-          <h3 className="text-2xl font-bold mb-2">{t('earnings.motivationTitle')}</h3>
-          <p className="text-lg opacity-90">{t('earnings.motivationDesc')}</p>
-        </CardContent>
-      </Card>
+      <div className="scm-tray p-8 text-center">
+        <h3 className="text-xl font-bold text-neutral-900 mb-2">{t('earnings.motivationTitle')}</h3>
+        <p className="text-neutral-600 max-w-md mx-auto">{t('earnings.motivationDesc')}</p>
+      </div>
     </motion.div>
   );
 }

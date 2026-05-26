@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { useApp } from '../contexts/AppContext';
 import type { Product } from '../api/client';
 import PageHeader from '../components/layout/PageHeader';
+import PageLoader from '../components/layout/PageLoader';
 import EmptyState from '../components/layout/EmptyState';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -103,16 +104,14 @@ export default function Storefront() {
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
-  if (loading) {
-    return <div className="text-center py-20 text-muted-foreground">{t('common.loading')}</div>;
-  }
+  if (loading) return <PageLoader />;
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
       <PageHeader
         title={t('storefront.title')}
         subtitle={t('storefront.subtitle', { count: products.length })}
-        icon={<Sparkles className="w-9 h-9 text-brand-accent" />}
+        icon={<Sparkles className="w-8 h-8 text-[#ef4d23]" />}
       />
 
       {products.length > 0 && (
@@ -123,11 +122,11 @@ export default function Storefront() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('common.search')}
-              className="pl-9 bg-card/80"
+              className="pl-9 bg-white border-neutral-200"
             />
           </div>
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full sm:w-48 bg-card/80">
+            <SelectTrigger className="w-full sm:w-48 bg-white border-neutral-200">
               <SelectValue placeholder={t('common.allCategories')} />
             </SelectTrigger>
             <SelectContent>
@@ -147,7 +146,7 @@ export default function Storefront() {
           title={t('storefront.emptyTitle')}
           description={t('storefront.emptyDesc')}
           actionLabel={t('storefront.uploadBtn')}
-          onAction={() => navigate('/upload')}
+          onAction={() => navigate('/seller/upload')}
         />
       ) : filtered.length === 0 ? (
         <p className="text-center text-muted-foreground py-12">{t('common.search')}</p>
@@ -160,7 +159,7 @@ export default function Storefront() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
             >
-              <Card className="overflow-hidden border-border/60 hover:border-brand-primary/30 transition-all group h-full flex flex-col">
+              <div className="scm-card overflow-hidden hover:shadow-md transition-shadow group h-full flex flex-col">
                 <div
                   className="relative overflow-hidden cursor-pointer"
                   onClick={() => setDetailProduct(product)}
@@ -175,7 +174,7 @@ export default function Storefront() {
                       {t('storefront.pendingSync')}
                     </Badge>
                   )}
-                  <Badge className="absolute top-3 left-3 bg-brand-primary gap-1">
+                  <Badge className="absolute top-3 left-3 bg-[#ef4d23] gap-1 border-0">
                     <Award className="w-3 h-3" />
                     {t('storefront.verified')}
                   </Badge>
@@ -192,7 +191,7 @@ export default function Storefront() {
                   <div className="flex justify-between items-end mb-4">
                     <div>
                       <p className="text-xs text-muted-foreground">{t('storefront.price')}</p>
-                      <p className="text-xl font-bold text-brand-primary">
+                      <p className="text-xl font-bold text-[#ef4d23]">
                         ₹{product.price.toLocaleString('en-IN')}
                       </p>
                     </div>
@@ -214,14 +213,17 @@ export default function Storefront() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full border-purple-800/50 text-purple-300 hover:bg-purple-950/30"
+                      className="w-full border-violet-200 text-violet-700 hover:bg-violet-50"
                       onClick={() => setPromoProduct(product)}
                     >
                       <Share2 className="w-4 h-4" />
                       {t('storefront.promotion')}
                     </Button>
                     <div className="flex gap-2">
-                      <Button className="flex-1 bg-gradient-to-r from-brand-primary to-emerald-500">
+                      <Button
+                        className="flex-1 scm-cta-gradient rounded-full"
+                        onClick={() => navigate('/buyer')}
+                      >
                         <ShoppingCart className="w-4 h-4" />
                         {t('storefront.buyNow')}
                       </Button>
@@ -235,14 +237,14 @@ export default function Storefront() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </div>
             </motion.div>
           ))}
         </div>
       )}
 
       <Dialog open={!!detailProduct} onOpenChange={() => setDetailProduct(null)}>
-        <DialogContent className="max-w-lg bg-card border-border">
+        <DialogContent className="max-w-lg bg-white border-neutral-200">
           {detailProduct && (
             <>
               <img src={detailProduct.image} alt="" className="w-full h-48 object-cover rounded-lg -mt-2" />
@@ -250,7 +252,7 @@ export default function Storefront() {
                 <DialogTitle>{detailProduct.title}</DialogTitle>
               </DialogHeader>
               <p className="text-sm text-muted-foreground">{detailProduct.description}</p>
-              <p className="text-2xl font-bold text-brand-primary">
+              <p className="text-2xl font-bold text-[#ef4d23]">
                 ₹{detailProduct.price.toLocaleString('en-IN')}
               </p>
             </>
@@ -259,16 +261,16 @@ export default function Storefront() {
       </Dialog>
 
       <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
-        <DialogContent className="max-w-md bg-card border-border">
+        <DialogContent className="max-w-md bg-white border-neutral-200">
           {selectedProduct && (
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Award className="w-6 h-6 text-brand-primary" />
+                  <Award className="w-6 h-6 text-[#ef4d23]" />
                   {t('storefront.authenticity')}
                 </DialogTitle>
               </DialogHeader>
-              <div className="bg-muted rounded-xl p-6 flex flex-col items-center">
+              <div className="scm-tray p-6 flex flex-col items-center">
                 <div className="bg-white p-4 rounded-xl">
                   <QRCodeSVG
                     id="qr-code-svg"
@@ -295,7 +297,7 @@ export default function Storefront() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('storefront.status')}</span>
-                    <span className="text-brand-primary font-medium flex items-center gap-1">
+                    <span className="text-[#ef4d23] font-medium flex items-center gap-1">
                       <Award className="w-4 h-4" />
                       {t('storefront.verifiedAuthentic')}
                     </span>
@@ -317,7 +319,7 @@ export default function Storefront() {
       </Dialog>
 
       <Dialog open={!!promoProduct} onOpenChange={() => setPromoProduct(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-card border-border">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto bg-white border-neutral-200">
           {promoProduct && (() => {
             const promo = generatePromotion(promoProduct);
             return (
@@ -329,40 +331,40 @@ export default function Storefront() {
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <Card className="bg-purple-950/30 border-purple-800/50">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-2 font-semibold">
-                        <Instagram className="w-5 h-5 text-purple-400" />
+                  <div className="scm-subcard p-4">
+                    <CardContent className="p-0">
+                      <div className="flex items-center gap-2 mb-2 font-semibold text-neutral-900">
+                        <Instagram className="w-5 h-5 text-violet-600" />
                         {t('storefront.instagramPost')}
                       </div>
                       <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-sans">
                         {promo.instagram}
                       </pre>
                       <Button
-                        className="w-full mt-3 bg-gradient-to-r from-purple-500 to-pink-500"
+                        className="w-full mt-3 rounded-full bg-violet-600 hover:bg-violet-700"
                         onClick={() => copyText(promo.instagram, t('common.copied'))}
                       >
                         {t('storefront.copyInstagram')}
                       </Button>
                     </CardContent>
-                  </Card>
-                  <Card className="bg-green-950/30 border-green-800/50">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-2 font-semibold">
-                        <Share2 className="w-5 h-5 text-green-400" />
+                  </div>
+                  <div className="scm-subcard p-4">
+                    <CardContent className="p-0">
+                      <div className="flex items-center gap-2 mb-2 font-semibold text-neutral-900">
+                        <Share2 className="w-5 h-5 text-[#ef4d23]" />
                         {t('storefront.whatsappMsg')}
                       </div>
                       <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-sans">
                         {promo.whatsapp}
                       </pre>
                       <Button
-                        className="w-full mt-3 bg-gradient-to-r from-brand-primary to-emerald-500"
+                        className="w-full mt-3 scm-cta-gradient rounded-full"
                         onClick={() => copyText(promo.whatsapp, t('common.copied'))}
                       >
                         {t('storefront.copyWhatsapp')}
                       </Button>
                     </CardContent>
-                  </Card>
+                  </div>
                 </div>
               </>
             );

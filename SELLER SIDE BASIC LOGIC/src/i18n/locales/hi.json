@@ -1,5 +1,5 @@
 {
-  "brand": "ARTISYNK",
+  "brand": "She Can Market",
   "tagline": "ग्रामीण महिला कारीगरों को सशक्त बनाना",
   "footer": "ग्रामीण महिला कारीगरों के सशक्तिकरण के लिए प्रेम से बनाया गया",
   "nav": {
@@ -125,6 +125,44 @@
     "recentTransactions": "हाल के लेनदेन",
     "motivationTitle": "बढ़ते रहें!",
     "motivationDesc": "आप अपनी अद्भुत कारीगरी से खुद और अपने समुदाय को सशक्त बना रही हैं"
+  },
+  "platform": {
+    "title": "She Can Market प्लेटफ़ॉर्म",
+    "subtitle": "महिला कारीगरों और जागरूक खरीदारों के लिए एक मंच",
+    "sellerTitle": "सेलर पोर्टल",
+    "sellerDesc": "उत्पाद अपलोड करें, ऑर्डर मैनेज करें, कमाई ट्रैक करें",
+    "buyerTitle": "खरीदार बाज़ार",
+    "buyerDesc": "सत्यापित कारीगरों से हस्तनिर्मित उत्पाद खरीदें",
+    "demoHint": "खरीदार के रूप में ऑर्डर करें, फिर सेलर पोर्टल में स्टेटस बढ़ाएं",
+    "hub": "होम"
+  },
+  "buyer": {
+    "brand": "She Can Market Shop",
+    "nav": { "home": "खरीदें", "cart": "कार्ट", "orders": "मेरे ऑर्डर" },
+    "marketplaceTitle": "हस्तनिर्मित बाज़ार",
+    "marketplaceSubtitle": "महिला कारीगरों के {{count}} उत्पाद",
+    "noProducts": "अभी कोई उत्पाद उपलब्ध नहीं",
+    "addToCart": "कार्ट में जोड़ें",
+    "addedToCart": "कार्ट में जोड़ दिया गया",
+    "cartTitle": "आपका कार्ट",
+    "cartEmpty": "कार्ट खाली है",
+    "total": "कुल",
+    "checkout": "चेकआउट",
+    "checkoutTitle": "चेकआउट",
+    "checkoutSubtitle": "महिला कारीगरों का समर्थन करें",
+    "yourName": "आपका नाम",
+    "namePlaceholder": "जैसे, प्रिया शर्मा",
+    "nameHint": "ऑर्डर ट्रैक करने के लिए वही नाम उपयोग करें",
+    "nameRequired": "कृपया अपना नाम दर्ज करें",
+    "backToCart": "कार्ट पर वापस",
+    "placeOrder": "ऑर्डर करें",
+    "orderPlaced": "ऑर्डर सफलतापूर्वक हो गया",
+    "ordersTitle": "मेरे ऑर्डर",
+    "ordersSubtitle": "{{count}} ऑर्डर",
+    "lookupName": "आपका नाम",
+    "showOrders": "ऑर्डर दिखाएं",
+    "enterNameFirst": "ऑर्डर देखने के लिए अपना नाम दर्ज करें",
+    "noOrders": "अभी कोई ऑर्डर नहीं"
   },
   "language": {
     "label": "भाषा",

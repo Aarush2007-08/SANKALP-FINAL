@@ -6,24 +6,40 @@ import { toast } from 'sonner';
 import { useApp } from '../contexts/AppContext';
 import type { OrderStatus } from '../api/client';
 import PageHeader from '../components/layout/PageHeader';
+import PageLoader from '../components/layout/PageLoader';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { cn } from '../components/ui/utils';
 
 const STATUS_FLOW: OrderStatus[] = ['pending', 'packed', 'shipped', 'delivered'];
 
+const statusConfig = {
+  pending: {
+    icon: Clock,
+    chip: 'scm-status-pending',
+    gradient: 'from-amber-400 to-orange-500',
+  },
+  packed: {
+    icon: Box,
+    chip: 'scm-status-packed',
+    gradient: 'from-blue-400 to-cyan-500',
+  },
+  shipped: {
+    icon: Truck,
+    chip: 'scm-status-shipped',
+    gradient: 'from-violet-400 to-purple-500',
+  },
+  delivered: {
+    icon: CheckCircle,
+    chip: 'scm-status-delivered',
+    gradient: 'from-emerald-400 to-green-500',
+  },
+} as const;
+
 export default function Orders() {
   const { t } = useTranslation();
   const { orders, advanceOrder, isOnline, loading } = useApp();
   const [filter, setFilter] = useState<string>('all');
-
-  const statusConfig = {
-    pending: { icon: Clock, color: 'from-yellow-400 to-amber-500', bg: 'bg-yellow-950/40', border: 'border-yellow-800', text: 'text-yellow-400' },
-    packed: { icon: Box, color: 'from-blue-400 to-cyan-500', bg: 'bg-blue-950/40', border: 'border-blue-800', text: 'text-blue-400' },
-    shipped: { icon: Truck, color: 'from-purple-400 to-pink-500', bg: 'bg-purple-950/40', border: 'border-purple-800', text: 'text-purple-400' },
-    delivered: { icon: CheckCircle, color: 'from-brand-primary to-emerald-500', bg: 'bg-green-950/40', border: 'border-green-800', text: 'text-green-400' },
-  };
 
   const filteredOrders = useMemo(() => {
     if (filter === 'all') return orders;
@@ -43,98 +59,95 @@ export default function Orders() {
     }
   };
 
-  if (loading) {
-    return <div className="text-center py-20 text-muted-foreground">{t('common.loading')}</div>;
-  }
+  if (loading) return <PageLoader />;
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
       <PageHeader
         title={t('orders.title')}
         subtitle={t('orders.subtitle', { count: orders.length })}
-        icon={<Package className="w-9 h-9 text-blue-400" />}
+        icon={<Package className="w-8 h-8 text-[#ef4d23]" />}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {STATUS_FLOW.map((status) => {
           const config = statusConfig[status];
           const count = orders.filter((o) => o.status === status).length;
+          const Icon = config.icon;
           return (
-            <Card key={status} className={cn(config.bg, config.border, 'border')}>
-              <CardContent className="p-4 text-center">
-                <config.icon className={cn('w-7 h-7 mx-auto mb-2', config.text)} />
-                <p className="text-2xl font-bold">{count}</p>
-                <p className={cn('text-xs font-medium', config.text)}>
-                  {t(`orders.status.${status}`)}
-                </p>
-              </CardContent>
-            </Card>
+            <div key={status} className={cn('scm-card p-4 text-center border', config.chip)}>
+              <Icon className="w-6 h-6 mx-auto mb-2 opacity-80" />
+              <p className="text-2xl font-bold text-neutral-900">{count}</p>
+              <p className="text-xs font-medium mt-0.5">{t(`orders.status.${status}`)}</p>
+            </div>
           );
         })}
       </div>
 
       <Tabs value={filter} onValueChange={setFilter} className="mb-6">
-        <TabsList className="bg-card/80 flex flex-wrap h-auto gap-1 p-1">
-          <TabsTrigger value="all">{t('orders.filterAll')}</TabsTrigger>
+        <TabsList className="bg-neutral-100 flex flex-wrap h-auto gap-1 p-1 rounded-full">
+          <TabsTrigger value="all" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-[#ef4d23]">
+            {t('orders.filterAll')}
+          </TabsTrigger>
           {STATUS_FLOW.map((s) => (
-            <TabsTrigger key={s} value={s}>
+            <TabsTrigger
+              key={s}
+              value={s}
+              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-[#ef4d23]"
+            >
               {t(`orders.status.${s}`)}
             </TabsTrigger>
           ))}
         </TabsList>
       </Tabs>
 
-      <div className="space-y-4">
-        {filteredOrders.map((order, index) => {
-          const config = statusConfig[order.status];
-          const StatusIcon = config.icon;
-          const canAdvance = order.status !== 'delivered';
+      {filteredOrders.length === 0 ? (
+        <div className="scm-card p-12 text-center text-neutral-500">{t('orders.subtitle', { count: 0 })}</div>
+      ) : (
+        <div className="space-y-4">
+          {filteredOrders.map((order, index) => {
+            const config = statusConfig[order.status];
+            const StatusIcon = config.icon;
+            const canAdvance = order.status !== 'delivered';
 
-          return (
-            <motion.div
-              key={order.id}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Card className="overflow-hidden border-border/60 hover:border-border transition-all">
+            return (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className="scm-card overflow-hidden"
+              >
                 <div className="flex flex-col md:flex-row">
-                  <div className="w-full md:w-40 h-40 md:h-auto shrink-0">
-                    <img
-                      src={order.productImage}
-                      alt={order.productTitle}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-full md:w-36 h-36 md:h-auto shrink-0 bg-neutral-100">
+                    <img src={order.productImage} alt={order.productTitle} className="w-full h-full object-cover" />
                   </div>
-                  <CardContent className="flex-1 p-5">
+                  <div className="flex-1 p-5">
                     <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-4">
                       <div>
-                        <h3 className="text-lg font-bold">{order.productTitle}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="text-lg font-bold text-neutral-900">{order.productTitle}</h3>
+                        <p className="text-sm text-neutral-500">
                           {t('orders.orderId')}: {order.id}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-neutral-500">
                           {t('orders.customer')}: {order.customer}
                         </p>
                       </div>
-                      <div
+                      <span
                         className={cn(
-                          'inline-flex items-center gap-2 px-3 py-1.5 rounded-full border w-fit',
-                          config.bg,
-                          config.border
+                          'inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-semibold w-fit',
+                          config.chip
                         )}
                       >
-                        <StatusIcon className={cn('w-4 h-4', config.text)} />
-                        <span className={cn('font-semibold text-sm', config.text)}>
-                          {t(`orders.status.${order.status}`)}
-                        </span>
-                      </div>
+                        <StatusIcon className="w-4 h-4" />
+                        {t(`orders.status.${order.status}`)}
+                      </span>
                     </div>
 
                     <div className="flex flex-wrap justify-between gap-4 mb-4">
                       <div>
-                        <p className="text-xs text-muted-foreground">{t('orders.orderDate')}</p>
-                        <p className="font-medium">
+                        <p className="text-xs text-neutral-500">{t('orders.orderDate')}</p>
+                        <p className="font-medium text-neutral-800">
                           {new Date(order.date).toLocaleDateString('en-IN', {
                             year: 'numeric',
                             month: 'long',
@@ -143,17 +156,17 @@ export default function Orders() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">{t('orders.amount')}</p>
-                        <p className="text-xl font-bold text-brand-primary">
+                        <p className="text-xs text-neutral-500">{t('orders.amount')}</p>
+                        <p className="text-xl font-bold text-[#ef4d23]">
                           ₹{order.amount.toLocaleString('en-IN')}
                         </p>
                       </div>
                     </div>
 
                     <div className="relative mb-4">
-                      <div className="absolute left-0 top-1/2 w-full h-1 bg-muted -translate-y-1/2" />
+                      <div className="absolute left-0 top-1/2 w-full h-1 bg-neutral-100 -translate-y-1/2 rounded-full" />
                       <div
-                        className={cn('absolute left-0 top-1/2 h-1 bg-gradient-to-r -translate-y-1/2 transition-all', config.color)}
+                        className={cn('absolute left-0 top-1/2 h-1 bg-gradient-to-r -translate-y-1/2 rounded-full transition-all', config.gradient)}
                         style={{
                           width:
                             order.status === 'pending'
@@ -173,13 +186,13 @@ export default function Orders() {
                             <div
                               key={s}
                               className={cn(
-                                'w-7 h-7 rounded-full flex items-center justify-center',
+                                'w-7 h-7 rounded-full flex items-center justify-center border-2',
                                 active
-                                  ? `bg-gradient-to-br ${sc.color} text-white`
-                                  : 'bg-muted text-muted-foreground'
+                                  ? `bg-gradient-to-br ${sc.gradient} border-white text-white`
+                                  : 'bg-white border-neutral-200 text-neutral-300'
                               )}
                             >
-                              {active && <CheckCircle className="w-4 h-4" />}
+                              {active && <CheckCircle className="w-3.5 h-3.5" />}
                             </div>
                           );
                         })}
@@ -191,19 +204,19 @@ export default function Orders() {
                         size="sm"
                         onClick={() => handleAdvance(order.id)}
                         disabled={!isOnline}
-                        className="bg-gradient-to-r from-brand-primary to-emerald-500"
+                        className="scm-cta-gradient rounded-full"
                       >
                         {t('orders.advance')}
                         <ChevronRight className="w-4 h-4" />
                       </Button>
                     )}
-                  </CardContent>
+                  </div>
                 </div>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
     </motion.div>
   );
 }

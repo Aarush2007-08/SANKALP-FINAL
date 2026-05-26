@@ -1,0 +1,172 @@
+/* She Can Market — global design tokens */
+:root {
+  --scm-orange: #ef4d23;
+  --scm-dark: #0b0f1a;
+  --scm-page: #ededed;
+  --scm-hero: #d9d9d9;
+  --scm-tray: #f5f2ee;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  --brand-primary: #ef4d23;
+  --brand-accent: #ef4d23;
+  --brand-warm: #d9431a;
+  --background: #ededed;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary: #ef4d23;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f2ee;
+  --secondary-foreground: #171717;
+  --muted: #f5f2ee;
+  --muted-foreground: #737373;
+  --accent: #f5f2ee;
+  --accent-foreground: #171717;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: transparent;
+  --input-background: #ffffff;
+  --ring: #ef4d23;
+  --radius: 1rem;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.scm-page-frame {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--scm-page);
+  padding: 0.75rem;
+  font-family: var(--font-sans);
+}
+
+@media (min-width: 640px) {
+  .scm-page-frame {
+    padding: 1rem;
+  }
+}
+
+.scm-panel {
+  background: #ffffff;
+  border-radius: 1rem;
+  min-height: calc(100vh - 24px);
+}
+
+@media (min-width: 640px) {
+  .scm-panel {
+    border-radius: 1.5rem;
+    min-height: calc(100vh - 32px);
+  }
+}
+
+.scm-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.scm-tray {
+  background: var(--scm-tray);
+  border-radius: 1.5rem;
+}
+
+.scm-btn-primary {
+  background: var(--scm-orange);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.scm-btn-dark {
+  background: var(--scm-dark);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.scm-headline-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.scm-icon-chip {
+  display: inline-flex;
+  padding: 0.625rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--scm-orange), #ff6b47);
+  color: white;
+}
+
+.scm-subcard {
+  background: #fafafa;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.scm-alert-warn {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  border-radius: 1rem;
+}
+
+.scm-alert-sync {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 1rem;
+  color: #9a3412;
+}
+
+.scm-cta-gradient {
+  background: linear-gradient(135deg, var(--scm-orange), #ff6b47);
+  color: white;
+}
+
+.scm-cta-gradient:hover {
+  filter: brightness(1.05);
+}
+
+.scm-nav-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.scm-nav-card:hover {
+  border-color: rgba(239, 77, 35, 0.35);
+  box-shadow: 0 8px 24px rgba(239, 77, 35, 0.12);
+}
+
+.scm-status-pending {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+}
+
+.scm-status-packed {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.scm-status-shipped {
+  background: #faf5ff;
+  border-color: #e9d5ff;
+  color: #7c3aed;
+}
+
+.scm-status-delivered {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #15803d;
+}

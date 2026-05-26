@@ -1,5 +1,5 @@
 {
-  "brand": "ARTISYNK",
+  "brand": "She Can Market",
   "tagline": "Empowering Rural Women Artisans",
   "footer": "Made with love for empowering rural women artisans",
   "nav": {
@@ -125,6 +125,45 @@
     "recentTransactions": "Recent Transactions",
     "motivationTitle": "Keep Growing!",
     "motivationDesc": "You're empowering yourself and your community through your amazing craftsmanship"
+  },
+  "platform": {
+    "title": "She Can Market Platform",
+    "subtitle": "One platform for women artisans and conscious buyers",
+    "sellerTitle": "Seller Portal",
+    "sellerDesc": "Upload products, manage orders, track earnings",
+    "buyerTitle": "Buyer Marketplace",
+    "buyerDesc": "Shop handmade crafts from verified artisans",
+    "demoHint": "Place an order as a buyer, then advance it in Seller Portal",
+    "hub": "Home"
+  },
+  "buyer": {
+    "brand": "She Can Market Shop",
+    "nav": { "home": "Shop", "cart": "Cart", "orders": "My Orders" },
+    "marketplaceTitle": "Handmade Marketplace",
+    "marketplaceSubtitle": "{{count}} products from women artisans",
+    "noProducts": "No products available yet",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to cart",
+    "cartTitle": "Your Cart",
+    "cartEmpty": "Cart is empty",
+    "cartEmptyDesc": "Browse the marketplace",
+    "total": "Total",
+    "checkout": "Checkout",
+    "checkoutTitle": "Checkout",
+    "checkoutSubtitle": "Support women artisans",
+    "yourName": "Your name",
+    "namePlaceholder": "e.g. Priya Sharma",
+    "nameHint": "Use the same name to track orders",
+    "nameRequired": "Please enter your name",
+    "placeOrder": "Place Order",
+    "orderPlaced": "Order placed successfully",
+    "backToCart": "Back to cart",
+    "ordersTitle": "My Orders",
+    "ordersSubtitle": "{{count}} orders",
+    "lookupName": "Your name",
+    "showOrders": "Show orders",
+    "enterNameFirst": "Enter your name to view orders",
+    "noOrders": "No orders yet"
   },
   "language": {
     "label": "Language",
