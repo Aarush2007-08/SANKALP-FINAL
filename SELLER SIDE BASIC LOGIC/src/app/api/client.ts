@@ -128,7 +128,7 @@ export const api = {
     }),
 };
 
-const QUEUE_KEY = 'artisynk_offline_queue';
+const QUEUE_KEY = 'she_can_market_offline_queue';
 
 export interface QueuedProduct extends CreateProductInput {
   localId: string;

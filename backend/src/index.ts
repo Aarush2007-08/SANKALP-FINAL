@@ -35,7 +35,7 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'artisynk-api', timestamp: Date.now() });
+  res.json({ status: 'ok', service: 'she-can-market-api', timestamp: Date.now() });
 });
 
 app.use('/api/products', productsRouter);
@@ -44,5 +44,5 @@ app.use('/api/earnings', earningsRouter);
 app.use('/api/ai', aiRouter);
 
 app.listen(PORT, () => {
-  console.log(`ARTISYNK API running at http://localhost:${PORT}`);
+  console.log(`She Can Market API running at http://localhost:${PORT}`);
 });

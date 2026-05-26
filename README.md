@@ -1,6 +1,6 @@
-# ARTISYNK - Rural Women Artisan E-Commerce Platform
+# She Can Market - Rural Women Artisan E-Commerce Platform
 
-This repository contains the complete codebase for **ARTISYNK**, a platform designed to empower rural women artisans by providing them with an easy-to-use storefront, AI-assisted product listing, order tracking, and earnings dashboard.
+This repository contains the complete codebase for **She Can Market**, a platform designed to empower rural women artisans by providing them with an easy-to-use storefront, AI-assisted product listing, order tracking, and earnings dashboard.
 
 ## System Architecture
 

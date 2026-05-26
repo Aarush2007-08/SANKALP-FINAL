@@ -4,7 +4,7 @@ import en from './locales/en.json';
 import hi from './locales/hi.json';
 import kn from './locales/kn.json';
 
-const saved = localStorage.getItem('artisynk_lang') ?? 'en';
+const saved = localStorage.getItem('she_can_market_lang') ?? 'en';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -18,7 +18,7 @@ i18n.use(initReactI18next).init({
 });
 
 i18n.on('languageChanged', (lng) => {
-  localStorage.setItem('artisynk_lang', lng);
+  localStorage.setItem('she_can_market_lang', lng);
   document.documentElement.lang = lng;
 });
 

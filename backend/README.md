@@ -1,4 +1,4 @@
-# ARTISYNK API
+# She Can Market API
 
 Express + SQLite backend for the seller (and future buyer) simulation.
 

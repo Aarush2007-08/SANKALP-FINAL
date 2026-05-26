@@ -1,4 +1,4 @@
-# ARTISYNK — Seller Commerce Assistant
+# She Can Market — Seller Commerce Assistant
 
 Empowering rural women artisans: upload products with AI assistance, manage a storefront, track orders, and view earnings.
 
