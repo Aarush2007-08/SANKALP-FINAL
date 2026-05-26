@@ -9,9 +9,10 @@
     "seed": "tsx src/seed.ts"
   },
   "dependencies": {
-    "better-sqlite3": "^11.8.1",
+    "@types/pg": "^8.20.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "pg": "^8.21.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",

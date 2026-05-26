@@ -5,16 +5,16 @@ import type { CreateOrderInput, Order, OrderStatus } from '../types.js';
 const router = Router();
 const STATUS_FLOW: OrderStatus[] = ['pending', 'packed', 'shipped', 'delivered'];
 
-function rowToOrder(row: Record<string, unknown>): Order {
+function rowToOrder(row: any): Order {
   return {
-    id: row.id as string,
-    productId: row.product_id as string,
-    productTitle: row.product_title as string,
-    productImage: row.product_image as string,
-    amount: row.amount as number,
+    id: row.id,
+    productId: row.product_id,
+    productTitle: row.product_title,
+    productImage: row.product_image,
+    amount: Number(row.amount),
     status: row.status as OrderStatus,
-    date: row.date as string,
-    customer: row.customer as string,
+    date: row.date,
+    customer: row.customer,
   };
 }
 
@@ -22,22 +22,26 @@ function createOrderId() {
   return `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 }
 
-router.get('/', (_req, res) => {
-  const rows = db
-    .prepare('SELECT * FROM orders ORDER BY date DESC')
-    .all() as Record<string, unknown>[];
-  res.json(rows.map(rowToOrder));
+router.get('/', async (_req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM orders ORDER BY date DESC');
+    res.json(result.rows.map(rowToOrder));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
-router.get('/customer/:customer', (req, res) => {
+router.get('/customer/:customer', async (req, res) => {
   const customer = req.params.customer.trim();
-  const rows = db
-    .prepare('SELECT * FROM orders WHERE lower(customer) = lower(?) ORDER BY date DESC')
-    .all(customer) as Record<string, unknown>[];
-  res.json(rows.map(rowToOrder));
+  try {
+    const result = await db.query('SELECT * FROM orders WHERE lower(customer) = lower($1) ORDER BY date DESC', [customer]);
+    res.json(result.rows.map(rowToOrder));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body as Partial<CreateOrderInput>;
   const customer = body.customer?.trim();
 
@@ -57,53 +61,65 @@ router.post('/', (req, res) => {
   const id = createOrderId();
   const date = new Date().toISOString();
 
-  db.prepare(
-    `INSERT INTO orders (id, product_id, product_title, product_image, amount, status, date, customer)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(id, body.productId, body.productTitle, body.productImage, body.amount, 'pending', date, customer);
+  try {
+    await db.query(
+      `INSERT INTO orders (id, product_id, product_title, product_image, amount, status, date, customer)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [id, body.productId, body.productTitle, body.productImage, body.amount, 'pending', date, customer]
+    );
 
-  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(id) as Record<string, unknown>;
-  res.status(201).json(rowToOrder(row));
+    const result = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
+    res.status(201).json(rowToOrder(result.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
-router.patch('/:id/status', (req, res) => {
+router.patch('/:id/status', async (req, res) => {
   const { status } = req.body as { status?: OrderStatus };
   if (!status || !STATUS_FLOW.includes(status)) {
     res.status(400).json({ error: 'Invalid status' });
     return;
   }
 
-  const result = db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(status, req.params.id);
-  if (result.changes === 0) {
-    res.status(404).json({ error: 'Order not found' });
-    return;
-  }
+  try {
+    const updateRes = await db.query('UPDATE orders SET status = $1 WHERE id = $2', [status, req.params.id]);
+    if (updateRes.rowCount === 0) {
+      res.status(404).json({ error: 'Order not found' });
+      return;
+    }
 
-  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id) as Record<string, unknown>;
-  res.json(rowToOrder(row));
+    const selectRes = await db.query('SELECT * FROM orders WHERE id = $1', [req.params.id]);
+    res.json(rowToOrder(selectRes.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
-router.post('/:id/advance', (req, res) => {
-  const row = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id) as
-    | Record<string, unknown>
-    | undefined;
+router.post('/:id/advance', async (req, res) => {
+  try {
+    const selectRes = await db.query('SELECT * FROM orders WHERE id = $1', [req.params.id]);
+    const row = selectRes.rows[0];
 
-  if (!row) {
-    res.status(404).json({ error: 'Order not found' });
-    return;
+    if (!row) {
+      res.status(404).json({ error: 'Order not found' });
+      return;
+    }
+
+    const current = row.status as OrderStatus;
+    const idx = STATUS_FLOW.indexOf(current);
+    if (idx < 0 || idx >= STATUS_FLOW.length - 1) {
+      res.status(400).json({ error: 'Order already at final status' });
+      return;
+    }
+
+    const next = STATUS_FLOW[idx + 1];
+    await db.query('UPDATE orders SET status = $1 WHERE id = $2', [next, req.params.id]);
+    const updatedRes = await db.query('SELECT * FROM orders WHERE id = $1', [req.params.id]);
+    res.json(rowToOrder(updatedRes.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
   }
-
-  const current = row.status as OrderStatus;
-  const idx = STATUS_FLOW.indexOf(current);
-  if (idx < 0 || idx >= STATUS_FLOW.length - 1) {
-    res.status(400).json({ error: 'Order already at final status' });
-    return;
-  }
-
-  const next = STATUS_FLOW[idx + 1];
-  db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(next, req.params.id);
-  const updated = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id) as Record<string, unknown>;
-  res.json(rowToOrder(updated));
 });
 
 export default router;

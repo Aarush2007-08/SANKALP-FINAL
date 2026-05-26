@@ -1,30 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { db, initDb } from './db/index.js';
 import productsRouter from './routes/products.js';
 import ordersRouter from './routes/orders.js';
 import earningsRouter from './routes/earnings.js';
 import aiRouter from './routes/ai.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.join(__dirname, '../data');
-
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-initDb();
-
 import { seedDatabase } from './seed.js';
-
-seedDatabase();
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
-const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:5174').split(',');
+const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:5174,http://localhost:3000').split(',');
 
 app.use(
   cors({
@@ -43,6 +28,15 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/earnings', earningsRouter);
 app.use('/api/ai', aiRouter);
 
-app.listen(PORT, () => {
-  console.log(`She Can Market API running at http://localhost:${PORT}`);
-});
+// Allow Vercel to export the app without running .listen unless local
+if (process.env.NODE_ENV !== 'production') {
+  initDb().then(() => {
+    seedDatabase();
+    app.listen(PORT, () => {
+      console.log(`She Can Market API running at http://localhost:${PORT}`);
+    });
+  }).catch(console.error);
+}
+
+// For Vercel Serverless
+export default app;

@@ -4,81 +4,98 @@ import type { CreateProductInput, Product } from '../types.js';
 
 const router = Router();
 
-function rowToProduct(row: Record<string, unknown>): Product {
+function rowToProduct(row: any): Product {
   return {
-    id: row.id as string,
-    image: row.image as string,
-    title: row.title as string,
-    description: row.description as string,
-    price: row.price as number,
-    category: row.category as string,
-    caption: row.caption as string,
-    hashtags: JSON.parse(row.hashtags as string) as string[],
-    artisan: row.artisan as string,
-    timestamp: row.created_at as number,
+    id: row.id,
+    image: row.image,
+    title: row.title,
+    description: row.description,
+    price: Number(row.price),
+    category: row.category,
+    caption: row.caption,
+    hashtags: typeof row.hashtags === 'string' ? JSON.parse(row.hashtags) : row.hashtags,
+    artisan: row.artisan,
+    timestamp: Number(row.created_at),
     synced: Boolean(row.synced),
   };
 }
 
-router.get('/', (_req, res) => {
-  const rows = db
-    .prepare('SELECT * FROM products ORDER BY created_at DESC')
-    .all() as Record<string, unknown>[];
-  res.json(rows.map(rowToProduct));
+router.get('/', async (_req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM products ORDER BY created_at DESC');
+    res.json(result.rows.map(rowToProduct));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body as CreateProductInput;
   const id = `prod_${Date.now()}`;
   const created_at = Date.now();
   const synced = body.synced !== false ? 1 : 0;
 
-  db.prepare(
-    `INSERT INTO products (id, image, title, description, price, category, caption, hashtags, artisan, synced, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(
-    id,
-    body.image,
-    body.title,
-    body.description,
-    body.price,
-    body.category,
-    body.caption,
-    JSON.stringify(body.hashtags),
-    body.artisan,
-    synced,
-    created_at
-  );
+  try {
+    await db.query(
+      `INSERT INTO products (id, image, title, description, price, category, caption, hashtags, artisan, synced, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      [
+        id,
+        body.image,
+        body.title,
+        body.description,
+        body.price,
+        body.category,
+        body.caption,
+        JSON.stringify(body.hashtags),
+        body.artisan,
+        synced,
+        created_at
+      ]
+    );
 
-  const row = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as Record<string, unknown>;
-  res.status(201).json(rowToProduct(row));
-});
-
-router.delete('/:id', (req, res) => {
-  const result = db.prepare('DELETE FROM products WHERE id = ?').run(req.params.id);
-  if (result.changes === 0) {
-    res.status(404).json({ error: 'Product not found' });
-    return;
+    const result = await db.query('SELECT * FROM products WHERE id = $1', [id]);
+    res.status(201).json(rowToProduct(result.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
   }
-  res.status(204).send();
 });
 
-router.patch('/:id/sync', (req, res) => {
-  const result = db.prepare('UPDATE products SET synced = 1 WHERE id = ?').run(req.params.id);
-  if (result.changes === 0) {
-    res.status(404).json({ error: 'Product not found' });
-    return;
+router.delete('/:id', async (req, res) => {
+  try {
+    const result = await db.query('DELETE FROM products WHERE id = $1', [req.params.id]);
+    if (result.rowCount === 0) {
+      res.status(404).json({ error: 'Product not found' });
+      return;
+    }
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
   }
-  const row = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id) as Record<string, unknown>;
-  res.json(rowToProduct(row));
 });
 
-router.post('/sync-all', (_req, res) => {
-  db.prepare('UPDATE products SET synced = 1 WHERE synced = 0').run();
-  const rows = db
-    .prepare('SELECT * FROM products ORDER BY created_at DESC')
-    .all() as Record<string, unknown>[];
-  res.json(rows.map(rowToProduct));
+router.patch('/:id/sync', async (req, res) => {
+  try {
+    const result = await db.query('UPDATE products SET synced = 1 WHERE id = $1', [req.params.id]);
+    if (result.rowCount === 0) {
+      res.status(404).json({ error: 'Product not found' });
+      return;
+    }
+    const selectRes = await db.query('SELECT * FROM products WHERE id = $1', [req.params.id]);
+    res.json(rowToProduct(selectRes.rows[0]));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+router.post('/sync-all', async (_req, res) => {
+  try {
+    await db.query('UPDATE products SET synced = 1 WHERE synced = 0');
+    const result = await db.query('SELECT * FROM products ORDER BY created_at DESC');
+    res.json(result.rows.map(rowToProduct));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
 export default router;
