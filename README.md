@@ -61,8 +61,7 @@ sequenceDiagram
     Backend-->>Frontend: Dashboard Metrics
 ```
 
-
-
+ 
 ## FRONTEND BACKEND CONNECTION 
 
 ```mermaid
